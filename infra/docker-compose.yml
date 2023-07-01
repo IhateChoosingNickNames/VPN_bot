@@ -1,0 +1,44 @@
+version: '3.8'
+
+volumes:
+  media_volume:
+  pg_volume:
+
+services:
+
+  db:
+    image: postgres:15.3-alpine3.18
+    restart: always
+    volumes:
+      - pg_volume:/var/lib/postgresql/data/
+    env_file:
+      - .env
+    healthcheck:
+       test: ["CMD-SHELL", "pg_isready -U postgres1"]
+       interval: 5s
+       timeout: 5s
+       retries: 5
+
+  bot:
+    build:
+      context: ..
+      dockerfile: ./Dockerfile_bot
+    restart: always
+    volumes:
+      - media_volume:/app/media/
+    env_file:
+      - .env
+    depends_on:
+      - db
+
+  admin_bot:
+    build:
+      context: ..
+      dockerfile: ./Dockerfile_admin_bot
+    restart: always
+    volumes:
+      - media_volume:/app/media/
+    env_file:
+      - .env
+    depends_on:
+      - bot

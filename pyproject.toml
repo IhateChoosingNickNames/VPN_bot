@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "vpn-bot"
+version = "0.1.0"
+description = ""
+authors = ["Ларькин Михаил <jetpilot314@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+python-dotenv = "^1.0.0"
+sqlalchemy = "^2.0.17"
+aiogram = "^2.25.1"
+alembic = "^1.11.1"
+psycopg2-binary = "^2.9.6"
+black = "^23.3.0"
+flake8 = "^6.0.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
