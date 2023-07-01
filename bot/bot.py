@@ -100,21 +100,25 @@ async def buy(message: types.Message):
     if settings.PAYMENTS_TOKEN.split(":")[1] == "TEST":
         await bot.send_message(message.chat.id, "Тестовый платеж!!!")
 
-    rate_data[message["from"]["id"]] = settings.RATES[message["text"]]
+    current_rate = settings.RATES[message["text"]]
+    rate_data[message["from"]["id"]] = current_rate
 
-    # TODO вынести в настройки все поля
     await bot.send_invoice(
         message.chat.id,
-        title="Подписка на бота",
-        description="Активация подписки на бота на 1 месяц",
+        title="Покупка подписки на ВПН",
+        description=f"Активация подписки на ВПН на {current_rate['duration']} {current_rate['measurement']}",
         provider_token=settings.PAYMENTS_TOKEN,
-        currency="rub",
+        currency=f"{current_rate['currency']}",
         photo_url="https://www.aroged.com/wp-content/uploads/2022/06/Telegram-has-a-premium-subscription.jpg",
         photo_width=416,
         photo_height=234,
         photo_size=416,
         is_flexible=False,
-        prices=settings.PRICES,
+        prices=[
+            types.LabeledPrice(
+                label="ВПН на {} месяц", amount=current_rate["price"]
+            )
+        ],
         start_parameter="one-month-subscription",
         payload="test-invoice-payload",
     )
@@ -129,7 +133,7 @@ async def pre_checkout_query(pre_checkout_q: types.PreCheckoutQuery):
 @dp.message_handler(content_types=ContentType.SUCCESSFUL_PAYMENT)
 async def successful_payment(message: types.Message):
     """Отправка сообщения и ссылки на Outline после успешной оплаты."""
-    data = parse_message(message)
+    data = parse_message(message, rate_data[message["from"]["id"]])
     save_payment_info(data)
     url = get_outline_vpn_url()
     await bot.send_message(
@@ -141,3 +145,4 @@ async def successful_payment(message: types.Message):
     )
     await bot.send_message(message.chat.id, "Ваша ссылка на Outline VPN:")
     await bot.send_message(message.chat.id, url)
+    del rate_data[message["from"]["id"]]

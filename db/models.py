@@ -1,4 +1,4 @@
-from sqlalchemy import Column, ForeignKey, Integer, String, DateTime
+from sqlalchemy import Column, ForeignKey, Integer, String, DateTime, func
 from sqlalchemy.orm import relationship
 
 from .base import Base
@@ -36,9 +36,13 @@ class PaymentInfo(Base):
     invoice_payload = Column(String(100))
     telegram_payment_charge_id = Column(String(200))
     provider_payment_charge_id = Column(String(200))
+    rate_name = Column(String(50))
+    country = Column(String(50))
+    devices = Column(Integer)
+    start_date = Column(DateTime(timezone=True), server_default=func.now())
+    end_date = Column(DateTime(timezone=True))
     user_id = Column(Integer, ForeignKey("Users.id"))
     user = relationship("User", foreign_keys="PaymentInfo.user_id")
-    # TODO добавить поля
 
     def __repr__(self):
         return (

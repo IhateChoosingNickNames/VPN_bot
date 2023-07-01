@@ -1,3 +1,6 @@
+from datetime import datetime, timedelta
+
+
 def get_menu(kb, items):
     """Создает меню с переданными кнопками и коллбеками."""
     result = []
@@ -13,7 +16,7 @@ def get_menu(kb, items):
     return result
 
 
-def parse_message(message):
+def parse_message(message, rate_data):
     """Разбивает входящее сообщение от ТГ по необходимым для БД ключам."""
     user_info = {
         "tg_user_id": message["from"]["id"],
@@ -24,7 +27,7 @@ def parse_message(message):
         "date": message["date"],
     }
 
-    payment_info = {
+    payment_data = {
         "currency": message["successful_payment"]["currency"],
         "total_amount": message["successful_payment"]["total_amount"],
         "invoice_payload": message["successful_payment"]["invoice_payload"],
@@ -34,11 +37,24 @@ def parse_message(message):
         "provider_payment_charge_id": message["successful_payment"][
             "provider_payment_charge_id"
         ],
+        "rate_name": rate_data["name"],
+        "country": rate_data["country"],
+        "devices": rate_data["devices"],
+        "end_date": get_end_date(rate_data["duration"])
     }
+    return {"user": user_info, "payment_data": payment_data}
 
-    return {"user": user_info, "payment_info": payment_info}
+
+def get_end_date(duration):
+    """Получение даты окончания подписки."""
+    mins_per_hour = 60
+    hours_per_day = 24
+    days_per_month = 30
+    return datetime.now() + timedelta(
+        minutes=mins_per_hour * hours_per_day * days_per_month * duration
+    )
 
 
 def get_outline_vpn_url():
     """Получение урла для коннекта с Outline"""
-    pass
+    return "https://some_new_shiny_socker.org/12345678"

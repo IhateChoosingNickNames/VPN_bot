@@ -39,16 +39,9 @@ def save_payment_info(data):
     """Добавление платежа в БД."""
     current_session = get_session(engine)
     user = get_or_create_user(current_session, data["user"])
-    payment_data = data["payment_info"]
+    payment_data = data["payment_data"]
 
-    new_payment = PaymentInfo(
-        currency=payment_data["currency"],
-        total_amount=payment_data["total_amount"],
-        invoice_payload=payment_data["invoice_payload"],
-        telegram_payment_charge_id=payment_data["telegram_payment_charge_id"],
-        provider_payment_charge_id=payment_data["provider_payment_charge_id"],
-        user_id=user.id,
-    )
+    new_payment = PaymentInfo(user_id=user.id, **payment_data)
 
     current_session.add(new_payment)
     current_session.commit()

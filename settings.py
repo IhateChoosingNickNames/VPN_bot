@@ -59,34 +59,158 @@ manual_rates_commands = {
     "Семейный, 6 месяцев / Yota и Tele2 / 5 📱": None,
 }
 
-pay_commands = list(manual_rates_commands.keys()) + list(filter(lambda x: rates_commands[x] is None, rates_commands))
+pay_commands = list(manual_rates_commands.keys()) + list(
+    filter(lambda x: rates_commands[x] is None, rates_commands)
+)
 
 
 RATES = {
-    "Базовый, 1 месяц / 100 ₽ / 2 📱": {"name": "Базовый", "duration": "1", "measurement": "month", "country": "🇬🇧", "devices": 2},
-    "Семейный, 6 месяцев / 500 ₽ / 5 📱": {"name": "Базовый", "duration": "1", "measurement": "month", "country": "🇬🇧", "devices": 2},
-    "Семейный, год / 950 ₽ / 5 📱": {"name": "Базовый", "duration": "1", "measurement": "month", "country": "🇬🇧", "devices": 2},
-    "Премиум, год / 1800 ₽ / 10 📱": {"name": "Базовый", "duration": "1", "measurement": "month", "country": "🇬🇧", "devices": 2},
-    "Бизнес, год / 9800 ₽": {"name": "Базовый", "duration": "1", "measurement": "month", "country": "🇬🇧", "devices": 2},
-    "Yota, Tele2 / 1 месяц / 100 ₽ / 2 📱": {"name": "Базовый", "duration": "1", "measurement": "month", "country": "🇬🇧", "devices": 2},
-
-    "Базовый, 1 месяц / 🇬🇧 / 2 📱": {"name": "Базовый", "duration": "1", "measurement": "month", "country": "🇬🇧", "devices": 2},
-    "Базовый, 1 месяц / 🇫🇮 / 2 📱": {"name": "Базовый", "duration": "1", "measurement": "month", "country": "🇫🇮", "devices": 2},
-    "Базовый, 1 месяц / 🇩🇪 / 2 📱": {"name": "Базовый", "duration": "1", "measurement": "month", "country": "🇩🇪", "devices": 2},
-    "Базовый, 1 месяц / 🇺🇸 / 2 📱": {"name": "Базовый", "duration": "1", "measurement": "month", "country": "🇺🇸", "devices": 2},
-    "Базовый, 1 месяц / 🇷🇺 / 2 📱": {"name": "Базовый", "duration": "1", "measurement": "month", "country": "🇷🇺", "devices": 2},
-
-    "Семейный, 6 месяцев / 🇬🇧 / 5 📱": {"name": "Семейный", "duration": "6", "measurement": "month", "country": "🇬🇧", "devices": 5},
-    "Семейный, 6 месяцев / 🇫🇮 / 5 📱": {"name": "Семейный", "duration": "6", "measurement": "month", "country": "🇫🇮", "devices": 5},
-    "Семейный, 6 месяцев / 🇩🇪 / 5 📱": {"name": "Семейный", "duration": "6", "measurement": "month", "country": "🇩🇪", "devices": 5},
-    "Семейный, 6 месяцев / 🇺🇸 / 5 📱": {"name": "Семейный", "duration": "6", "measurement": "month", "country": "🇬🇧", "devices": 5},
-    "Семейный, 6 месяцев / Yota и Tele2 / 5 📱": {"name": "Семейный", "duration": "6", "measurement": "month", "country": "Yota и Tele2", "devices": 5},
+    "Базовый, 1 месяц / 100 ₽ / 2 📱": {
+        "name": "Базовый",
+        "duration": 1,
+        "measurement": "month",
+        "country": "GB",
+        "devices": 2,
+        "price": 100 * 100,
+        "currency": "RUB",
+    },
+    "Семейный, 6 месяцев / 500 ₽ / 5 📱": {
+        "name": "Базовый",
+        "duration": 6,
+        "measurement": "month",
+        "country": "GB",
+        "devices": 5,
+        "price": 500 * 100,
+        "currency": "RUB",
+    },
+    "Семейный, год / 950 ₽ / 5 📱": {
+        "name": "Базовый",
+        "duration": 12,
+        "measurement": "month",
+        "country": "GB",
+        "devices": 5,
+        "price": 950 * 100,
+        "currency": "RUB",
+    },
+    "Премиум, год / 1800 ₽ / 10 📱": {
+        "name": "Базовый",
+        "duration": 12,
+        "measurement": "month",
+        "country": "GB",
+        "devices": 10,
+        "price": 1800 * 100,
+        "currency": "RUB",
+    },
+    "Бизнес, год / 9800 ₽": {
+        "name": "Базовый",
+        "duration": 12,
+        "measurement": "month",
+        "country": "GB",
+        "devices": 10,
+        "price": 9800 * 100,
+        "currency": "RUB",
+    },
+    "Yota, Tele2 / 1 месяц / 100 ₽ / 2 📱": {
+        "name": "Базовый",
+        "duration": 1,
+        "measurement": "month",
+        "country": "GB",
+        "devices": 2,
+        "price": 100 * 100,
+        "currency": "RUB",
+    },
+    "Базовый, 1 месяц / 🇬🇧 / 2 📱": {
+        "name": "Базовый",
+        "duration": 1,
+        "measurement": "month",
+        "country": "GB",
+        "devices": 2,
+        "price": 100 * 100,
+        "currency": "RUB",
+    },
+    "Базовый, 1 месяц / 🇫🇮 / 2 📱": {
+        "name": "Базовый",
+        "duration": 1,
+        "measurement": "month",
+        "country": "FI",
+        "devices": 2,
+        "price": 100 * 100,
+        "currency": "RUB",
+    },
+    "Базовый, 1 месяц / 🇩🇪 / 2 📱": {
+        "name": "Базовый",
+        "duration": 1,
+        "measurement": "month",
+        "country": "DE",
+        "devices": 2,
+        "price": 100 * 100,
+        "currency": "RUB",
+    },
+    "Базовый, 1 месяц / 🇺🇸 / 2 📱": {
+        "name": "Базовый",
+        "duration": 1,
+        "measurement": "month",
+        "country": "US",
+        "devices": 2,
+        "price": 100 * 100,
+        "currency": "RUB",
+    },
+    "Базовый, 1 месяц / 🇷🇺 / 2 📱": {
+        "name": "Базовый",
+        "duration": 1,
+        "measurement": "month",
+        "country": "RU",
+        "devices": 2,
+        "price": 100 * 100,
+        "currency": "RUB",
+    },
+    "Семейный, 6 месяцев / 🇬🇧 / 5 📱": {
+        "name": "Семейный",
+        "duration": 6,
+        "measurement": "month",
+        "country": "GB",
+        "devices": 5,
+        "price": 500 * 100,
+        "currency": "RUB",
+    },
+    "Семейный, 6 месяцев / 🇫🇮 / 5 📱": {
+        "name": "Семейный",
+        "duration": 6,
+        "measurement": "month",
+        "country": "FI",
+        "devices": 5,
+        "price": 500 * 100,
+        "currency": "RUB",
+    },
+    "Семейный, 6 месяцев / 🇩🇪 / 5 📱": {
+        "name": "Семейный",
+        "duration": 6,
+        "measurement": "month",
+        "country": "DE",
+        "devices": 5,
+        "price": 500 * 100,
+        "currency": "RUB",
+    },
+    "Семейный, 6 месяцев / 🇺🇸 / 5 📱": {
+        "name": "Семейный",
+        "duration": 6,
+        "measurement": "month",
+        "country": "GB",
+        "devices": 5,
+        "price": 500 * 100,
+        "currency": "RUB",
+    },
+    "Семейный, 6 месяцев / Yota и Tele2 / 5 📱": {
+        "name": "Семейный",
+        "duration": 6,
+        "measurement": "month",
+        "country": "RU",
+        "devices": 5,
+        "price": 500 * 100,
+        "currency": "RUB",
+    },
 }
 
-
-PRICES = [
-    types.LabeledPrice(label="Подписка на 1 месяц", amount=500 * 100),  # в копейках (руб)
-]
 
 MEDIA_DIR = os.path.join(os.getcwd(), "media")
 INFO_DIR = os.path.join(MEDIA_DIR, "info")
