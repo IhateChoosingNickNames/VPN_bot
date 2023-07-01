@@ -31,7 +31,10 @@ Create .env file backend/.env and fill it with required keys:
 
 ## db url
 Go to db/, open alembic.ini file and change sqlalchemy.url:
-sqlalchemy.url = **driver**://**user**:**password**@**DB_HOST**:**DB_PORT**/**DB_NAME**
+sqlalchemy.url = postgresql://**user**:**password**@**DB_HOST**:**DB_PORT**/**DB_NAME**
+
+## postgres user
+go to infra/ and change ... for your actual POSTGRES_USER.
 
 1. After that build and launch containers:
     #### docker-compose up -d --build
