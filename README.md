@@ -29,6 +29,10 @@ Create .env file backend/.env and fill it with required keys:
 - DB_PORT=5432
 - ADMIN_ID_1=...
 
+## db url
+Go to db/, open alembic.ini file and change sqlalchemy.url:
+sqlalchemy.url = **driver**://**user**:**password**@**DB_HOST**:**DB_PORT**/**DB_NAME**
+
 1. After that build and launch containers:
     #### docker-compose up -d --build
 2. Execute:
