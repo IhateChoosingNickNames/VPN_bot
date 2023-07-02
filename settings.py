@@ -7,8 +7,8 @@ load_dotenv()
 
 # Database
 DB_ENGINE = os.getenv("DB_ENGINE", default="postgresql+psycopg2")
-DB_NAME = os.getenv("DB_NAME", default="postgres1")
-POSTGRES_USER = os.getenv("POSTGRES_USER", default="postgres1")
+DB_NAME = os.getenv("DB_NAME", default="postgres3")
+POSTGRES_USER = os.getenv("POSTGRES_USER", default="postgres3")
 POSTGRES_PASSWORD = os.getenv("POSTGRES_PASSWORD", default="adm")
 DB_HOST = os.getenv("DB_HOST", default="db")
 DB_PORT = os.getenv("DB_PORT", default="5432")

@@ -116,7 +116,7 @@ async def buy(message: types.Message):
         is_flexible=False,
         prices=[
             types.LabeledPrice(
-                label="ВПН на {} месяц", amount=current_rate["price"]
+                label="ВПН на {} месяц(-ев)", amount=current_rate["price"]
             )
         ],
         start_parameter="one-month-subscription",
