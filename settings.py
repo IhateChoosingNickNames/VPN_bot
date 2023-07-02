@@ -214,3 +214,5 @@ RATES = {
 
 MEDIA_DIR = os.path.join(os.getcwd(), "media")
 INFO_DIR = os.path.join(MEDIA_DIR, "info")
+
+PHOTO_URL = "https://www.aroged.com/wp-content/uploads/2022/06/Telegram-has-a-premium-subscription.jpg"

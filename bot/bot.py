@@ -6,7 +6,7 @@ from aiogram.types.message import ContentType
 import settings
 from db.queries import save_payment_info, get_current_rate
 from . import messages
-from .utils import get_menu, parse_message, get_outline_vpn_url
+from .utils import get_kb, parse_message, get_outline_vpn_url
 
 bot = Bot(token=settings.BOT_TOKEN)
 dp = Dispatcher(bot)
@@ -21,17 +21,13 @@ def start_bot():
 @dp.message_handler(lambda message: message["text"] in ["/start", "◀️Назад"])
 async def bot_start(message: types.Message):
     """Начало работы."""
-    menu = get_menu(types.InlineKeyboardButton, settings.in_chat_commands)
-    kb = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
-    for elem in menu:
-        kb.add(*elem)
+    kb = get_kb(settings.in_chat_commands)
     await message.answer(messages.start_message, reply_markup=kb)
 
 
 @dp.message_handler(regexp="⏳ Мой тариф")
 async def bot_rate(message: types.Message):
     """Вывод текущего тарифа."""
-    # TODO добавить запрос к БД, сформировать ответ на "мой тариф"
     rates = get_current_rate(message["from"]["id"])
     if rates:
         for rate in rates:
@@ -66,14 +62,10 @@ async def bot_info(message: types.Message):
             await message.answer(msg, parse_mode="HTML")
 
 
-# @dp.callback_query_handler(lambda call: call.data=="rates")
 @dp.message_handler(lambda message: message["text"] in ["💵 Тарифы", "🔙 Назад"])
 async def bot_rates(message: types.Message):
     """Дефолтные тарифы."""
-    menu = get_menu(types.InlineKeyboardButton, settings.rates_commands)
-    kb = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
-    for elem in menu:
-        kb.add(*elem)
+    kb = get_kb(settings.rates_commands)
     kb.add(types.InlineKeyboardButton(text="◀️Назад"))
     await message.answer(
         messages.rates_start_message, reply_markup=kb, parse_mode="HTML"
@@ -83,10 +75,7 @@ async def bot_rates(message: types.Message):
 @dp.message_handler(regexp="Выбрать страну вручную 🇬🇧🇫🇮🇩🇪🇷🇺🇺🇸")
 async def bot_manual_rate(message: types.Message):
     """Расширенный выбор тарифа."""
-    menu = get_menu(types.InlineKeyboardButton, settings.manual_rates_commands)
-    kb = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
-    for elem in menu:
-        kb.add(*elem)
+    kb = get_kb(settings.manual_rates_commands)
     kb.add(types.InlineKeyboardButton(text="🔙 Назад"))
     await message.answer(
         "Выберете страну сервера и тариф.", reply_markup=kb, parse_mode="HTML"
@@ -106,17 +95,19 @@ async def buy(message: types.Message):
     await bot.send_invoice(
         message.chat.id,
         title="Покупка подписки на ВПН",
-        description=f"Активация подписки на ВПН на {current_rate['duration']} {current_rate['measurement']}",
+        description=(f"Активация подписки на ВПН на {current_rate['duration']}"
+                     f" {current_rate['measurement']}"),
         provider_token=settings.PAYMENTS_TOKEN,
         currency=f"{current_rate['currency']}",
-        photo_url="https://www.aroged.com/wp-content/uploads/2022/06/Telegram-has-a-premium-subscription.jpg",
+        photo_url=settings.PHOTO_URL,
         photo_width=416,
         photo_height=234,
         photo_size=416,
         is_flexible=False,
         prices=[
             types.LabeledPrice(
-                label="ВПН на {} месяц(-ев)", amount=current_rate["price"]
+                label="ВПН на {current_rate['duration']} месяц(-ев)",
+                amount=current_rate["price"],
             )
         ],
         start_parameter="one-month-subscription",

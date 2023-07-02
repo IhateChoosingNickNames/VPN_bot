@@ -1,19 +1,23 @@
 from datetime import datetime, timedelta
 
+from aiogram import types
 
-def get_menu(kb, items):
-    """Создает меню с переданными кнопками и коллбеками."""
-    result = []
+
+def get_kb(buttons):
+    """Создание клавиатуры с переданными кнопками и коллбеками."""
+    kb = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
     tmp = []
-    for index, data in enumerate(items.items()):
-        btn, clbk = data
-        tmp.append(kb(text=btn, callback_data=clbk))
+    for index, data in enumerate(buttons.items()):
+        text, callback_data = data
+        tmp.append(
+            types.InlineKeyboardButton(text=text, callback_data=callback_data)
+        )
         if index != 0 and index % 2 != 0:
-            result.append(tmp)
-            tmp = []
+            kb.add(*tmp)
+            tmp.clear()
     if tmp:
-        result.append(tmp)
-    return result
+        kb.add(*tmp)
+    return kb
 
 
 def parse_message(message, rate_data):

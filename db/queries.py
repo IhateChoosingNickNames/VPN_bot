@@ -8,12 +8,12 @@ def get_info():
     return current_session.query(PaymentInfo).all()
 
 
-def get_current_rate(user_id):
+def get_current_rate(tg_user_id):
     """Получение всех текущих тарифов."""
     current_session = get_session(engine)
     rates = (
-        current_session.query(PaymentInfo)
-        .filter(PaymentInfo.user_id == user_id)
+        current_session.query(PaymentInfo).join(User)
+        .filter_by(tg_user_id=tg_user_id)
         .all()
     )
     return rates
