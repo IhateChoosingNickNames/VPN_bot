@@ -14,7 +14,7 @@ Used technologies:
     - psycopg2-binary 2.9.6
 
 
-# Launch instructions:
+# First launch instructions:
 
 ## enviroment:
 Create .env file backend/.env and fill it with required keys:
