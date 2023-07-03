@@ -22,7 +22,7 @@ services:
   bot:
     build:
       context: ..
-      dockerfile: ./Dockerfile_bot
+      dockerfile: infra/docker/bot/Dockerfile_bot
     restart: always
     volumes:
       - media_volume:/app/media/
@@ -34,7 +34,7 @@ services:
   admin_bot:
     build:
       context: ..
-      dockerfile: ./Dockerfile_admin_bot
+      dockerfile: infra/docker/admin_bot/Dockerfile_admin_bot
     restart: always
     volumes:
       - media_volume:/app/media/
