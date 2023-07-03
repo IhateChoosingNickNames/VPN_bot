@@ -10,4 +10,4 @@ COPY ../../.. .
 
 LABEL author='Larkin Michael'
 
-ENTRYPOINT ["./infra/docker/bot/docker-entrypoint.sh"]
+CMD ["python", "manage.py", "start_bot"]
