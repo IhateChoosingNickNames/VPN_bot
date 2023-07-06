@@ -1,18 +1,22 @@
+import os
 from datetime import datetime, timedelta
 
 from aiogram import types
 
+import settings
+from db.queries import create_certificate_in_db, delete_expired_rates
 
-def get_kb(buttons):
+
+def get_kb(buttons, columns=2):
     """Создание клавиатуры с переданными кнопками и коллбеками."""
-    kb = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
+    kb = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=columns)
     tmp = []
     for index, data in enumerate(buttons.items()):
         text, callback_data = data
         tmp.append(
             types.InlineKeyboardButton(text=text, callback_data=callback_data)
         )
-        if index != 0 and index % 2 != 0:
+        if index != 0 and index % columns != 0:
             kb.add(*tmp)
             tmp.clear()
     if tmp:
@@ -43,7 +47,8 @@ def parse_message(message, rate_data):
         ],
         "rate_name": rate_data["name"],
         "country": rate_data["country"],
-        "devices": rate_data["devices"],
+        "devices_total": rate_data["devices"],
+        "devices_left": rate_data["devices"],
         "end_date": get_end_date(rate_data["duration"])
     }
     return {"user": user_info, "payment_data": payment_data}
@@ -59,6 +64,38 @@ def get_end_date(duration):
     )
 
 
-def get_outline_vpn_url():
-    """Получение урла для коннекта с Outline"""
-    return "https://some_new_shiny_socker.org/12345678"
+def _get_filename(username, user_id, current_cert_count):
+    """Создание валидного имени файла."""
+    return f"a{str(user_id)}_{current_cert_count}.ovpn"
+
+
+def remove_expired_certificates():
+    file_names = delete_expired_rates()
+    for file_name in file_names:
+        _remove_certificate_on_server(file_name)
+        _remove_certificate_local(file_name)
+
+
+def _create_certificate_on_server(file_name):
+    """Создание .ovpn на сервере."""
+    # TODO добавить вызов скрипта на создание
+    pass
+
+
+def _remove_certificate_on_server(file_name):
+    """Удаление .ovpn на сервере."""
+    # TODO добавить вызов скрипта на удаление
+    pass
+
+
+def _remove_certificate_local(file_name):
+    """Удаление .ovpn локально."""
+    os.remove(os.path.join(settings.CERTIFICATE_VOLUME, file_name))
+
+
+def get_config_file(username, user_id, current_cert_count, payment_info_id):
+    """Отправка файла."""
+    file_name = _get_filename(username, user_id, current_cert_count)
+    _create_certificate_on_server(file_name)
+    create_certificate_in_db(file_name, payment_info_id)
+    return file_name[:-5]

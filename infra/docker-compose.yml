@@ -3,6 +3,7 @@ version: '3.8'
 volumes:
   media_volume:
   pg_volume:
+  ovpn_volume:
 
 services:
 
@@ -26,6 +27,7 @@ services:
     restart: always
     volumes:
       - media_volume:/app/media/
+      - ovpn_volume:/app/ovpn_volume/
     env_file:
       - .env
     depends_on:

@@ -5,6 +5,11 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+# Server
+SERVER_CREATE_FILE_COMMAND = ""
+SERVER_REMOVE_FILE_COMMAND = ""
+CERTIFICATE_VOLUME = "ovpn_volume"
+
 # Database
 DB_ENGINE = os.getenv("DB_ENGINE", default="postgresql+psycopg2")
 DB_NAME = os.getenv("DB_NAME", default="postgres3")
@@ -30,7 +35,7 @@ commands_bot_admin = ("start_admin_bot",)
 # bot.py
 in_chat_commands = {
     "💵 Тарифы": "rates",
-    "⏳ Мой тариф": None,
+    "⏳ Мои тарифы": None,
     "🆘 Поддержка": None,
     "📖 Подробная инструкция": None,
     "🤔 FAQ": None,

@@ -5,7 +5,7 @@ from .base import Base
 
 
 class User(Base):
-    """Моделька юзеров."""
+    """Модель юзеров."""
 
     __tablename__ = "Users"
 
@@ -16,6 +16,7 @@ class User(Base):
     username = Column(String(100))
     language_code = Column(String(10), nullable=True)
     date = Column(DateTime)
+    certificate_number = Column(Integer, default=1)
     payment_info_id = relationship("PaymentInfo", back_populates="user")
 
     def __repr__(self):
@@ -38,14 +39,36 @@ class PaymentInfo(Base):
     provider_payment_charge_id = Column(String(200))
     rate_name = Column(String(50))
     country = Column(String(50))
-    devices = Column(Integer)
-    start_date = Column(DateTime(timezone=True), server_default=func.now())
-    end_date = Column(DateTime(timezone=True))
+    devices_total = Column(Integer)
+    devices_left = Column(Integer)
+    start_date = Column(DateTime, server_default=func.now())
+    end_date = Column(DateTime)
     user_id = Column(Integer, ForeignKey("Users.id"))
     user = relationship("User", foreign_keys="PaymentInfo.user_id")
+    certificate_id = relationship(
+        "Certificate",
+        cascade="all, delete-orphan",
+        back_populates="payment_info",
+    )
 
     def __repr__(self):
         return (
-            f"id={self.id!r}, username={self.user_id}, "
+            f"id={self.id!r}, user_id={self.user_id}, "
             f"currency={self.currency}, total_amount={self.total_amount}"
         )
+
+
+class Certificate(Base):
+    """Модель сертификатов."""
+
+    __tablename__ = "Certificate"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    file_name = Column(String(150))
+    payment_info_id = Column(Integer, ForeignKey("PaymentInfo.id"))
+    payment_info = relationship(
+        "PaymentInfo", foreign_keys="Certificate.payment_info_id"
+    )
+
+    def __repr__(self):
+        return f"id={self.id!r}, name={self.file_name}"
