@@ -1,3 +1,4 @@
+import json
 import os
 from datetime import datetime, timedelta
 
@@ -72,20 +73,26 @@ def _get_filename(username, user_id, current_cert_count):
 def remove_expired_certificates():
     file_names = delete_expired_rates()
     for file_name in file_names:
-        _remove_certificate_on_server(file_name)
+        _remove_certificate_on_server(file_name[:-5])
         _remove_certificate_local(file_name)
+
+
+def _get_json_data(script_name, file_name):
+    return json.dumps({"script_name": script_name, "file_name": file_name})
 
 
 def _create_certificate_on_server(file_name):
     """Создание .ovpn на сервере."""
-    # TODO добавить вызов скрипта на создание
-    pass
+    command = settings.SERVER_REQUEST_COMMAND
+    data = _get_json_data(settings.SERVER_CREATE_SCRIPT_NAME, file_name)
+    os.system(f"{command} {data!r}")
 
 
 def _remove_certificate_on_server(file_name):
     """Удаление .ovpn на сервере."""
-    # TODO добавить вызов скрипта на удаление
-    pass
+    command = settings.SERVER_REQUEST_COMMAND
+    data = _get_json_data(settings.SERVER_REMOVE_SCRIPT_NAME, file_name)
+    os.system(f"{command} {data!r}")
 
 
 def _remove_certificate_local(file_name):
@@ -96,6 +103,6 @@ def _remove_certificate_local(file_name):
 def get_config_file(username, user_id, current_cert_count, payment_info_id):
     """Отправка файла."""
     file_name = _get_filename(username, user_id, current_cert_count)
-    _create_certificate_on_server(file_name)
+    _create_certificate_on_server(file_name[:-5])
     create_certificate_in_db(file_name, payment_info_id)
     return file_name[:-5]

@@ -40,5 +40,6 @@ go to infra/ and set your actual POSTGRES_USER (look at braces {}).
     #### docker-compose up -d --build
 2. Make and run migrations:
     #### winpty docker compose exec bot bash -c "cd db && alembic revision --autogenerate && alembic upgrade head"
-
+3. Update apt and install curl:
+    #### winpty docker compose exec bot bash -c "apt-get update && apt-get install curl -y"
 After that the application is ready to use.

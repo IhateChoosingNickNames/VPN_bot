@@ -6,8 +6,9 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Server
-SERVER_CREATE_FILE_COMMAND = ""
-SERVER_REMOVE_FILE_COMMAND = ""
+SERVER_REQUEST_COMMAND = "curl host.docker.internal:8080 -X POST --data"
+SERVER_CREATE_SCRIPT_NAME = "create.sh"
+SERVER_REMOVE_SCRIPT_NAME = "remove.sh"
 CERTIFICATE_VOLUME = "ovpn_volume"
 
 # Database
