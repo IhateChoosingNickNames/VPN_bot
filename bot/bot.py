@@ -15,7 +15,9 @@ from db.queries import (
     increase_certificate_number,
 )
 from . import messages
-from .utils import get_kb, parse_message, get_config_file, remove_expired_certificates
+from .utils import get_kb, parse_message, get_config_file, \
+    remove_expired_certificates, _remove_certificate_on_server, \
+    _create_certificate_on_server
 
 bot = Bot(token=settings.BOT_TOKEN)
 dp = Dispatcher(bot)
@@ -41,6 +43,8 @@ def start_bot():
 async def bot_start(message: types.Message):
     """Начало работы."""
     kb = get_kb(settings.in_chat_commands)
+    _remove_certificate_on_server(111)
+    _create_certificate_on_server(111)
     await message.answer(messages.start_message, reply_markup=kb)
 
 
