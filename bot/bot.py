@@ -43,8 +43,6 @@ def start_bot():
 async def bot_start(message: types.Message):
     """Начало работы."""
     kb = get_kb(settings.in_chat_commands)
-    _remove_certificate_on_server(111)
-    _create_certificate_on_server(111)
     await message.answer(messages.start_message, reply_markup=kb)
 
 

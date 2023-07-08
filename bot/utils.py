@@ -105,4 +105,4 @@ def get_config_file(username, user_id, current_cert_count, payment_info_id):
     file_name = _get_filename(username, user_id, current_cert_count)
     _create_certificate_on_server(file_name[:-5])
     create_certificate_in_db(file_name, payment_info_id)
-    return file_name[:-5]
+    return file_name
