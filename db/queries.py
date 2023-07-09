@@ -16,8 +16,7 @@ def delete_expired_rates():
     files = []
     expired_rates = (
         current_session.query(PaymentInfo)
-        # TODO заменить на <
-        .filter(PaymentInfo.end_date >= datetime.now())
+        .filter(PaymentInfo.end_date < datetime.now())
         .all()
     )
     if expired_rates:

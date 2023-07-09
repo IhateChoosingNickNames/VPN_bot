@@ -9,7 +9,7 @@ from db.queries import create_certificate_in_db, delete_expired_rates
 
 
 def get_kb(buttons, columns=2):
-    """Создание клавиатуры с переданными кнопками и коллбеками."""
+    """Создание клавиатуры с переданными кнопками, коллбеками и шириной."""
     kb = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=columns)
     tmp = []
     for index, data in enumerate(buttons.items()):
@@ -75,6 +75,7 @@ def remove_expired_certificates():
     for file_name in file_names:
         _remove_certificate_on_server(file_name[:-5])
         _remove_certificate_local(file_name)
+        # TODO add sending message to the chat
 
 
 def _get_json_data(script_name, file_name):
@@ -89,7 +90,7 @@ def _create_certificate_on_server(file_name):
 
 
 def _remove_certificate_on_server(file_name):
-    """Удаление .ovpn на сервере."""
+    """Удаление сертификата на сервере."""
     command = settings.SERVER_REQUEST_COMMAND
     data = _get_json_data(settings.SERVER_REMOVE_SCRIPT_NAME, file_name)
     os.system(f"{command} {data!r}")
@@ -103,6 +104,6 @@ def _remove_certificate_local(file_name):
 def get_config_file(username, user_id, current_cert_count, payment_info_id):
     """Отправка файла."""
     file_name = _get_filename(username, user_id, current_cert_count)
-    _create_certificate_on_server(file_name[:-5])
+    _create_certificate_on_server(file_name[:-5])  # без расширения
     create_certificate_in_db(file_name, payment_info_id)
     return file_name

@@ -15,9 +15,7 @@ from db.queries import (
     increase_certificate_number,
 )
 from . import messages
-from .utils import get_kb, parse_message, get_config_file, \
-    remove_expired_certificates, _remove_certificate_on_server, \
-    _create_certificate_on_server
+from .utils import get_kb, parse_message, get_config_file, remove_expired_certificates
 
 bot = Bot(token=settings.BOT_TOKEN)
 dp = Dispatcher(bot)
@@ -34,7 +32,7 @@ async def search_expired_certificates():
 def start_bot():
     """Инициализация бота и планировщика."""
     # scheduler.add_job(search_expired_certificates, 'interval', hours=2)
-    scheduler.add_job(search_expired_certificates, 'date', run_date=datetime(2023, 7, 6, 19, 32, 5))
+    scheduler.add_job(search_expired_certificates, 'date', run_date=datetime(2023, 7, 9, 14, 3, 5))
     scheduler.start()
     executor.start_polling(dp, skip_updates=False)
 
@@ -43,7 +41,7 @@ def start_bot():
 async def bot_start(message: types.Message):
     """Начало работы."""
     kb = get_kb(settings.in_chat_commands)
-    await message.answer(messages.start_message, reply_markup=kb)
+    await message.answer(messages.START_MESSAGE, reply_markup=kb)
 
 
 @dp.message_handler(regexp="⏳ Мои тарифы")
@@ -59,12 +57,12 @@ async def bot_rate(message: types.Message):
         kb.add(types.InlineKeyboardButton(text="◀️Назад"))
         await message.answer("Выберите тариф:", reply_markup=kb)
     else:
-        await message.answer(messages.no_rate_message, parse_mode="HTML")
+        await message.answer(messages.NO_RATE_MESSAGE, parse_mode="HTML")
 
 
 @dp.message_handler(regexp="🔛 Тариф.*")
 async def bot_current_rate(message: types.Message):
-    # try:
+    try:
         id_ = int(message.text.split("==")[-1])
         choosen_rate = get_rate(id_)
         if choosen_rate.end_date < datetime.now():
@@ -78,34 +76,34 @@ async def bot_current_rate(message: types.Message):
             file_name = get_config_file(
                 username=message["from"]["username"],
                 user_id=message["from"]["id"],
-                current_cert_count=choosen_rate.user.certificate_number, # TODO тут бага
+                current_cert_count=choosen_rate.user.certificate_number,
                 payment_info_id=choosen_rate.id
             )
             decrease_devices_left(id_)
             increase_certificate_number(message["from"]["id"])
             file_path = os.path.join(settings.CERTIFICATE_VOLUME, file_name)
             await message.answer_document(document=open(file_path, "rb"))
-    # except Exception:  # добавить нормальную обработку
-    #     await message.answer("Что-то пошло не так.", parse_mode="HTML")
+    except Exception:  # добавить нормальную обработку
+        await message.answer("Что-то пошло не так.", parse_mode="HTML")
 
 
 @dp.message_handler(regexp="🆘 Поддержка")
 async def bot_support(message: types.Message):
     """Вывод информации о поддержке."""
-    await message.answer(messages.support_message, parse_mode="HTML")
+    await message.answer(messages.SUPPORT_MESSAGE, parse_mode="HTML")
 
 
 @dp.message_handler(regexp="🤔 FAQ")
 async def bot_faq(message: types.Message):
     """Вывод FAQ."""
-    for msg in messages.faq_message:
+    for msg in messages.FAQ_MESSAGES:
         await message.answer(msg, parse_mode="HTML")
 
 
 @dp.message_handler(regexp="📖 Подробная инструкция")
 async def bot_info(message: types.Message):
     """Вывод подробной инструкции пользования."""
-    for msg, pic_path in messages.info_messages_mapper.items():
+    for msg, pic_path in messages.INFO_MESSAGES_MAPPER.items():
         if pic_path is not None:
             with open(os.path.join(settings.INFO_DIR, pic_path), "rb") as file:
                 await message.answer_photo(
@@ -121,7 +119,7 @@ async def bot_rates(message: types.Message):
     kb = get_kb(settings.rates_commands)
     kb.add(types.InlineKeyboardButton(text="◀️Назад"))
     await message.answer(
-        messages.rates_start_message, reply_markup=kb, parse_mode="HTML"
+        messages.RATES_START_MESSAGE, reply_markup=kb, parse_mode="HTML"
     )
 
 

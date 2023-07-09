@@ -1,6 +1,5 @@
 import os
 
-from aiogram import types
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -68,6 +67,13 @@ manual_rates_commands = {
 pay_commands = list(manual_rates_commands.keys()) + list(
     filter(lambda x: rates_commands[x] is None, rates_commands)
 )
+
+
+MEDIA_DIR = os.path.join(os.getcwd(), "media")
+INFO_DIR = os.path.join(MEDIA_DIR, "info")
+
+# Photo for payment window
+PHOTO_URL = "https://www.aroged.com/wp-content/uploads/2022/06/Telegram-has-a-premium-subscription.jpg"
 
 
 RATES = {
@@ -216,9 +222,3 @@ RATES = {
         "currency": "RUB",
     },
 }
-
-
-MEDIA_DIR = os.path.join(os.getcwd(), "media")
-INFO_DIR = os.path.join(MEDIA_DIR, "info")
-
-PHOTO_URL = "https://www.aroged.com/wp-content/uploads/2022/06/Telegram-has-a-premium-subscription.jpg"

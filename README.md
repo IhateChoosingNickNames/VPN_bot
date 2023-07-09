@@ -12,7 +12,7 @@ Used technologies:
     - aiogram 2.25.1
     - alembic 1.11.1
     - psycopg2-binary 2.9.6
-
+    - apscheduler 3.10.1
 
 # First launch instructions:
 
@@ -39,7 +39,7 @@ go to infra/ and set your actual POSTGRES_USER (look at braces {}).
 1. After that build and launch containers:
     #### docker-compose up -d --build
 2. Make and run migrations:
-    #### winpty docker compose exec bot bash -c "cd db && alembic revision --autogenerate && alembic upgrade head"
+    #### docker compose exec bot bash -c "cd db && alembic revision --autogenerate && alembic upgrade head"
 3. Update apt and install curl:
-    #### winpty docker compose exec bot bash -c "apt-get update && apt-get install curl -y"
+    #### docker compose exec bot bash -c "apt-get update && apt-get install curl -y"
 After that the application is ready to use.
