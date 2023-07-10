@@ -34,12 +34,14 @@ Go to db/, open alembic.ini file and change sqlalchemy.url:
 sqlalchemy.url = postgresql://**user**:**password**@**DB_HOST**:**DB_PORT**/**DB_NAME**
 
 ## postgres user
-go to infra/ and set your actual POSTGRES_USER (look at braces {}).
+go to infra/ and set your actual POSTGRES_USER (look at braces {}) in docker-compose.yml.
 
-1. After that build and launch containers:
+1. This app's using external volume for DB so before you start you should create this volume:
+    #### docker volume create --name=pg_volume
+2. After that build and launch containers:
     #### docker-compose up -d --build
-2. Make and run migrations:
+3. Make and run migrations:
     #### docker compose exec bot bash -c "cd db && alembic revision --autogenerate && alembic upgrade head"
-3. Update apt and install curl:
+4. Update apt and install curl:
     #### docker compose exec bot bash -c "apt-get update && apt-get install curl -y"
 After that the application is ready to use.

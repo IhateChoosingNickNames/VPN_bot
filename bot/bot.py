@@ -1,4 +1,3 @@
-import asyncio
 import os
 from datetime import datetime
 
@@ -15,7 +14,12 @@ from db.queries import (
     increase_certificate_number,
 )
 from . import messages
-from .utils import get_kb, parse_message, get_config_file, remove_expired_certificates
+from .utils import (
+    get_kb,
+    parse_message,
+    get_config_file,
+    remove_expired_certificates,
+)
 
 bot = Bot(token=settings.BOT_TOKEN)
 dp = Dispatcher(bot)
@@ -32,7 +36,11 @@ async def search_expired_certificates():
 def start_bot():
     """Инициализация бота и планировщика."""
     # scheduler.add_job(search_expired_certificates, 'interval', hours=2)
-    scheduler.add_job(search_expired_certificates, 'date', run_date=datetime(2023, 7, 9, 14, 3, 5))
+    scheduler.add_job(
+        search_expired_certificates,
+        "date",
+        run_date=datetime(2023, 7, 9, 14, 3, 5),
+    )
     scheduler.start()
     executor.start_polling(dp, skip_updates=False)
 
@@ -51,7 +59,11 @@ async def bot_rate(message: types.Message):
     if rates:
         buttons = {}
         for rate in rates:
-            msg = f"🔛 Тариф: {rate.rate_name} // Устройства: {rate.devices_left} // Дата окончания: {rate.end_date} // Номер=={rate.id}"
+            msg = (
+                f"🔛 Тариф: {rate.rate_name} // Устройства: "
+                f"{rate.devices_left} // Дата окончания: "
+                f"{rate.end_date} // Номер=={rate.id}"
+            )
             buttons[msg] = None
         kb = get_kb(buttons, 1)
         kb.add(types.InlineKeyboardButton(text="◀️Назад"))
@@ -77,7 +89,7 @@ async def bot_current_rate(message: types.Message):
                 username=message["from"]["username"],
                 user_id=message["from"]["id"],
                 current_cert_count=choosen_rate.user.certificate_number,
-                payment_info_id=choosen_rate.id
+                payment_info_id=choosen_rate.id,
             )
             decrease_devices_left(id_)
             increase_certificate_number(message["from"]["id"])
@@ -189,7 +201,10 @@ async def successful_payment(message: types.Message):
     await bot.send_message(message.chat.id, "Выберите тариф:")
     await bot.send_message(
         message.chat.id,
-        "Перейдите в раздел <b>Мои тарифы</b>, выберите нужный и следуйте инструкциям",
+        (
+            "Перейдите в раздел <b>Мои тарифы</b>, выберите нужный и "
+            "следуйте инструкциям"
+        ),
         parse_mode="HTML",
     )
     del rate_data[message["from"]["id"]]

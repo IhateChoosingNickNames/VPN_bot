@@ -3,6 +3,7 @@ version: '3.8'
 volumes:
   media_volume:
   pg_volume:
+    external: true
   ovpn_volume:
 
 services:
@@ -15,8 +16,7 @@ services:
     env_file:
       - .env
     healthcheck:
-#       test: ["CMD-SHELL", "pg_isready -U {ACTUAL POSTGRES USER (remove braces too)}"]
-       test: ["CMD-SHELL", "pg_isready -U postgres3"]
+       test: ["CMD-SHELL", "pg_isready -U {ACTUAL POSTGRES USER (remove braces too)}"]
        interval: 5s
        timeout: 5s
        retries: 5
