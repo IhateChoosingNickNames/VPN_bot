@@ -11,15 +11,10 @@ from db.queries import (
     get_current_rates,
     get_rate,
     decrease_devices_left,
-    increase_certificate_number,
+    increase_key_count,
 )
 from . import messages
-from .utils import (
-    get_kb,
-    parse_message,
-    get_config_file,
-    remove_expired_certificates,
-)
+from .utils import get_kb, parse_message, get_outline_url, remove_expired_keys
 
 bot = Bot(token=settings.BOT_TOKEN)
 dp = Dispatcher(bot)
@@ -28,19 +23,19 @@ rate_data = {}  # Убрать
 scheduler = AsyncIOScheduler()
 
 
-async def search_expired_certificates():
+async def search_expired_keys():
     """Запуск поиска просроченных сертификатов."""
-    remove_expired_certificates()
+    remove_expired_keys()
 
 
 def start_bot():
     """Инициализация бота и планировщика."""
-    # scheduler.add_job(search_expired_certificates, 'interval', hours=2)
-    scheduler.add_job(
-        search_expired_certificates,
-        "date",
-        run_date=datetime(2023, 7, 9, 14, 3, 5),
-    )
+    scheduler.add_job(search_expired_keys, 'interval', hours=2)
+    # scheduler.add_job(
+    #     search_expired_keys,
+    #     "date",
+    #     run_date=datetime(2023, 7, 14, 18, 6, 5),
+    # )
     scheduler.start()
     executor.start_polling(dp, skip_updates=False)
 
@@ -84,17 +79,17 @@ async def bot_current_rate(message: types.Message):
                 "По этому тарифу вы больше не можете добавлять устройства."
             )
         else:
-            await message.answer(messages.OPEN_VPN_MESSAGE, parse_mode="HTML")
-            file_name = get_config_file(
+            await message.answer(messages.OUTLINE_VPN_MESSAGE, parse_mode="HTML")
+            key = get_outline_url(
                 username=message["from"]["username"],
                 user_id=message["from"]["id"],
-                current_cert_count=choosen_rate.user.certificate_number,
+                key_count=choosen_rate.user.key_count,
                 payment_info_id=choosen_rate.id,
+                choosen_rate=choosen_rate,
             )
             decrease_devices_left(id_)
-            increase_certificate_number(message["from"]["id"])
-            file_path = os.path.join(settings.CERTIFICATE_VOLUME, file_name)
-            await message.answer_document(document=open(file_path, "rb"))
+            increase_key_count(message["from"]["id"])
+            await message.answer(key, parse_mode="HTML")
     except Exception:  # добавить нормальную обработку
         await message.answer("Что-то пошло не так.", parse_mode="HTML")
 

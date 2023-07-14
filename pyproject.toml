@@ -16,6 +16,8 @@ black = "^23.3.0"
 flake8 = "^6.0.0"
 pyopenssl = "^23.2.0"
 apscheduler = "^3.10.1"
+requests = "^2.31.0"
+outline-vpn-api = "^3.0.0"
 
 
 [build-system]

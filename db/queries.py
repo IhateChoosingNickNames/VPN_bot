@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from .base import engine, get_session
-from .models import Certificate, User, PaymentInfo
+from .models import Key, User, PaymentInfo
 
 
 def get_info():
@@ -10,25 +10,23 @@ def get_info():
     return current_session.query(PaymentInfo).all()
 
 
-def delete_expired_rates():
+def _get_expired_keys():
     """Удаление всех просроченных сертификатов из БД."""
     current_session = get_session(engine)
-    files = []
+    keys = []
     expired_rates = (
         current_session.query(PaymentInfo)
-        .filter(PaymentInfo.end_date < datetime.now())
+        .join(Key)
+        .filter(PaymentInfo.end_date > datetime.now())
         .all()
     )
-    if expired_rates:
-        for rate in expired_rates:
-            cert = current_session.query(Certificate).filter_by(
-                payment_info_id=rate.id
-            )
-            if cert.first():
-                files.append(cert.first().file_name)
-                cert.delete()
+
+    for rate in expired_rates:
+        for key in rate.keys:
+            keys.append((rate.country, key.key_id))
+            key.is_active = False
         current_session.commit()
-    return files
+    return keys
 
 
 def decrease_devices_left(payment_id):
@@ -40,21 +38,24 @@ def decrease_devices_left(payment_id):
     current_session.commit()
 
 
-def increase_certificate_number(user_id):
+def increase_key_count(user_id):
     """Наращивание счетчика полученных пользователем сертификатов."""
     current_session = get_session(engine)
     current_session.query(User).filter_by(tg_user_id=user_id).update(
-        {"certificate_number": User.certificate_number + 1}
+        {"key_count": User.key_count + 1}
     )
     current_session.commit()
 
 
-def create_certificate_in_db(file_name, payment_info_id):
+def _save_key_in_db(key, key_name, key_id, payment_info_id):
     current_session = get_session(engine)
-    new_certificate = Certificate(
-        file_name=file_name, payment_info_id=payment_info_id
+    new_key = Key(
+        key=key,
+        key_name=key_name,
+        key_id=key_id,
+        payment_info_id=payment_info_id,
     )
-    current_session.add(new_certificate)
+    current_session.add(new_key)
     current_session.commit()
 
 
@@ -72,6 +73,7 @@ def get_current_rates(tg_user_id):
         .join(User)
         .filter_by(tg_user_id=tg_user_id)
         .filter(PaymentInfo.end_date >= datetime.now())
+        .filter(PaymentInfo.devices_left > 0)
         .all()
     )
     return rates
@@ -98,8 +100,6 @@ def save_payment_info(data):
     current_session = get_session(engine)
     user = get_or_create_user(current_session, data["user"])
     payment_data = data["payment_data"]
-
     new_payment = PaymentInfo(user_id=user.id, **payment_data)
-
     current_session.add(new_payment)
     current_session.commit()

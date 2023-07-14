@@ -42,6 +42,5 @@ go to infra/ and set your actual POSTGRES_USER (look at braces {}) in docker-com
     #### docker-compose up -d --build
 3. Make and run migrations:
     #### docker compose exec bot bash -c "cd db && alembic revision --autogenerate && alembic upgrade head"
-4. Update apt and install curl:
-    #### docker compose exec bot bash -c "apt-get update && apt-get install curl -y"
+
 After that the application is ready to use.

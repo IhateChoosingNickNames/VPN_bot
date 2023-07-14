@@ -3,8 +3,6 @@ version: '3.8'
 volumes:
   media_volume:
   pg_volume:
-    external: true
-  ovpn_volume:
 
 services:
 
@@ -16,7 +14,8 @@ services:
     env_file:
       - .env
     healthcheck:
-       test: ["CMD-SHELL", "pg_isready -U {ACTUAL POSTGRES USER (remove braces too)}"]
+#       test: ["CMD-SHELL", "pg_isready -U {ACTUAL POSTGRES USER (remove braces too)}"]
+       test: ["CMD-SHELL", "pg_isready -U postgres3"]
        interval: 5s
        timeout: 5s
        retries: 5
@@ -25,12 +24,9 @@ services:
     build:
       context: ..
       dockerfile: infra/docker/bot/Dockerfile_bot
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
     restart: always
     volumes:
       - media_volume:/app/media/
-      - ovpn_volume:/app/ovpn_volume/
     env_file:
       - .env
     depends_on:

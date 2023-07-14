@@ -5,10 +5,18 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Server
-SERVER_REQUEST_COMMAND = "curl 172.17.0.1:8080 -X POST --data"
-SERVER_CREATE_SCRIPT_NAME = "add.sh"
-SERVER_REMOVE_SCRIPT_NAME = "remove.sh"
-CERTIFICATE_VOLUME = "ovpn_volume"
+SOCKETS = {
+    # TODO добавить различные сервера
+    "GB": os.getenv("FINLAND_SERVER"),
+    "FI": os.getenv("FINLAND_SERVER"),
+    "DE": os.getenv("FINLAND_SERVER"),
+    "RU": os.getenv("FINLAND_SERVER"),
+    "US": os.getenv("FINLAND_SERVER"),
+}
+
+# Outline additional url
+OUTLINE_URL = "https://s3.amazonaws.com/outline-vpn/invite.html#/en/invite/"
+
 
 # Database
 DB_ENGINE = os.getenv("DB_ENGINE", default="postgresql+psycopg2")

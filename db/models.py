@@ -1,4 +1,12 @@
-from sqlalchemy import Column, ForeignKey, Integer, String, DateTime, func
+from sqlalchemy import (
+    Column,
+    ForeignKey,
+    Integer,
+    String,
+    DateTime,
+    func,
+    Boolean,
+)
 from sqlalchemy.orm import relationship
 
 from .base import Base
@@ -16,7 +24,7 @@ class User(Base):
     username = Column(String(100))
     language_code = Column(String(10), nullable=True)
     date = Column(DateTime)
-    certificate_number = Column(Integer, default=1)
+    key_count = Column(Integer, default=1)
     payment_info_id = relationship("PaymentInfo", back_populates="user")
 
     def __repr__(self):
@@ -45,8 +53,8 @@ class PaymentInfo(Base):
     end_date = Column(DateTime)
     user_id = Column(Integer, ForeignKey("Users.id"))
     user = relationship("User", foreign_keys="PaymentInfo.user_id")
-    certificate_id = relationship(
-        "Certificate",
+    keys = relationship(
+        "Key",
         cascade="all, delete-orphan",
         back_populates="payment_info",
     )
@@ -58,17 +66,20 @@ class PaymentInfo(Base):
         )
 
 
-class Certificate(Base):
+class Key(Base):
     """Модель сертификатов."""
 
-    __tablename__ = "Certificate"
+    __tablename__ = "Key"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    file_name = Column(String(150))
+    key = Column(String)
+    key_id = Column(Integer)
+    key_name = Column(String(150))
+    is_active = Column(Boolean, default=True)
     payment_info_id = Column(Integer, ForeignKey("PaymentInfo.id"))
     payment_info = relationship(
-        "PaymentInfo", foreign_keys="Certificate.payment_info_id"
+        "PaymentInfo", foreign_keys="Key.payment_info_id"
     )
 
     def __repr__(self):
-        return f"id={self.id!r}, name={self.file_name}"
+        return f"id={self.id!r}, name={self.key[50]}"
