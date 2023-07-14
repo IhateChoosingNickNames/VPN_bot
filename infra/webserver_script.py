@@ -16,8 +16,8 @@ from outline_vpn.outline_vpn import OutlineVPN
 client = OutlineVPN(
     # Необходимо прописывать на каждом сервере
     # Также сначала необходимо установить библиотеку для Питона
-    api_url="https://65.108.84.185:14918/OXMdHVcUerwYjSZB763h1w",
-    cert_sha256="4A5FBF57E5E6FEF2B3066CCE1D33EAC04760F16D022144595CD712586A65CCF7",
+    api_url="...",
+    cert_sha256="...",
 )
 
 
