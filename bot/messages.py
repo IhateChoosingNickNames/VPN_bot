@@ -204,10 +204,10 @@ FAQ_MESSAGES = (
 INFO_MESSAGES_MAPPER = {
     INFO_MESSAGE_1: None,
     INFO_MESSAGE_2: None,
-    INFO_MESSAGE_3_with_pic: "info_pic_1.png",
-    INFO_MESSAGE_4_with_pic: "info_pic_2.png",
+    INFO_MESSAGE_3_with_pic: "info_pic_1.jpg",
+    INFO_MESSAGE_4_with_pic: "info_pic_2.jpg",
     INFO_MESSAGE_5: None,
-    INFO_MESSAGE_6_with_pic: "info_pic_3.png",
+    INFO_MESSAGE_6_with_pic: "info_pic_3.jpg",
 
 }
 

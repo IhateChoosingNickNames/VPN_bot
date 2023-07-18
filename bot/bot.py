@@ -1,5 +1,6 @@
 import os
 from datetime import datetime
+import logging
 
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from aiogram import Bot, Dispatcher, executor, types
@@ -36,6 +37,7 @@ def start_bot():
     #     "date",
     #     run_date=datetime(2023, 7, 14, 18, 6, 5),
     # )
+    logging.basicConfig(level=logging.DEBUG)
     scheduler.start()
     executor.start_polling(dp, skip_updates=False)
 
